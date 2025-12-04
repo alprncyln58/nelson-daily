@@ -243,6 +243,25 @@ const SafeRender = ({ content }) => {
 //         }),
 //       }
 //     );
+//     if (!response.ok) throw new Error('API Error');
+//     const data = await response.json();
+//     let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+//     if (text) {
+//       text = text
+//         .replace(/```json/g, '')
+//         .replace(/```/g, '')
+//         .trim();
+//       const firstBrace = text.indexOf('{');
+//       const lastBrace = text.lastIndexOf('}');
+//       if (firstBrace !== -1 && lastBrace !== -1)
+//         text = text.substring(firstBrace, lastBrace + 1);
+//       return JSON.parse(text);
+//     }
+//     return null;
+//   } catch (error) {
+//     return null;
+//   }
+// };
 const generateMedicalContent = async (category, specificTopic = null) => {
   const validCategories = CATEGORIES.filter((c) => c !== 'Tümü').join(', ');
   const selectedCategory =
@@ -340,26 +359,6 @@ const generateMedicalContent = async (category, specificTopic = null) => {
     return null;
   }
 };
-    if (!response.ok) throw new Error('API Error');
-    const data = await response.json();
-    let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (text) {
-      text = text
-        .replace(/```json/g, '')
-        .replace(/```/g, '')
-        .trim();
-      const firstBrace = text.indexOf('{');
-      const lastBrace = text.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1)
-        text = text.substring(firstBrace, lastBrace + 1);
-      return JSON.parse(text);
-    }
-    return null;
-  } catch (error) {
-    return null;
-  }
-};
-
 const generateQuizQuestion = async (topicTitle, topicContent) => {
   const prompt = `Konu: ${topicTitle}. İçerik: ${JSON.stringify(topicContent)}.
   TUS Pediatri formatında zor bir soru hazırla. JSON: { "question": "...", "options": ["A)...", "B)...", "C)...", "D)...", "E)..."], "correctAnswer": 0, "explanation": "..." }`;
