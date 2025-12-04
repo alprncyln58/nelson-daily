@@ -184,6 +184,65 @@ const SafeRender = ({ content }) => {
 
 // --- YENİLENMİŞ PEDİATRİK AI FONKSİYONU ---
 
+// const generateMedicalContent = async (category, specificTopic = null) => {
+//   const validCategories = CATEGORIES.filter((c) => c !== 'Tümü').join(', ');
+//   const selectedCategory =
+//     category === 'Tümü'
+//       ? `Aşağıdaki listeden rastgele bir kategori seç: [${validCategories}]`
+//       : category;
+
+//   // Rastgelelik için Alfabe Ruleti:
+//   const alphabet = 'ABCDEFGHIKLMNOPRSTUVYZ';
+//   const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+
+//   // PEDİATRİ ODAK ALANLARI
+//   const focusAreas = [
+//     'Nadir görülen bir genetik sendrom',
+//     'Aşı takviminde yer alan veya yer almayan bir enfeksiyon',
+//     'Büyüme ve gelişme geriliği ile gelen bir vaka',
+//     'Pediatrik acilde sık görülen zehirlenme veya travma',
+//     'Yenidoğan dönemine özgü bir patoloji',
+//     'TUS Pediatri sınavında sorgulanan önemli bir detay',
+//     'Nelson kitabında vurgulanan klinik bir ipucu (Clinical Pearl)',
+//   ];
+//   const randomFocus = focusAreas[Math.floor(Math.random() * focusAreas.length)];
+
+//   let taskDescription = '';
+//   if (specificTopic && specificTopic.trim() !== '') {
+//     taskDescription = `GÖREV: "${specificTopic}" konusu hakkında Nelson Textbook of Pediatrics referanslı, kapsamlı bir hastalık/vaka kartı hazırla.
+//       Kategori: [${validCategories}].`;
+//   } else {
+//     taskDescription = `GÖREV: "${selectedCategory}" alanından rastgele bir hastalık seç.
+//       ÖNEMLİ KURAL: Asla 'KOAH', 'Alzheimer', 'Koroner Arter Hastalığı', 'Erişkin Tip Diyabet' gibi sadece yetişkinlerde görülen konuları SEÇME.
+//       Bunun yerine, "${randomLetter}" harfi ile başlayan veya "${randomFocus}" özelliğine sahip pediatrik bir konu seçmeni istiyorum.
+//       Her seferinde mutlaka farklı bir konu seç.`;
+//   }
+
+//   // PEDİATRİ ASİSTANI ROLÜ
+//   const prompt = `Sen uzman bir Çocuk Sağlığı ve Hastalıkları (Pediatri) asistanısın.
+//   Nelson Textbook of Pediatrics referanslı içerik üret. ${taskDescription}
+//   Bana şu formatta SADECE geçerli bir JSON döndür:
+//   {
+//     "title": "Hastalık Adı", "category": "Kategori", "reference": "Nelson 21. Baskı, Bölüm X",
+//     "content": { "definition": "...", "pathogenesis": "...", "clinical": "...", "labs": "...", "diagnosis": "...", "treatment_tus": "..." }
+//   }`;
+
+//   try {
+//     const response = await fetch(
+//       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+//       {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//           contents: [{ parts: [{ text: prompt }] }],
+//           generationConfig: {
+//             temperature: 1.2,
+//             topK: 40,
+//             topP: 0.95,
+//           },
+//         }),
+//       }
+//     );
 const generateMedicalContent = async (category, specificTopic = null) => {
   const validCategories = CATEGORIES.filter((c) => c !== 'Tümü').join(', ');
   const selectedCategory =
@@ -195,37 +254,59 @@ const generateMedicalContent = async (category, specificTopic = null) => {
   const alphabet = 'ABCDEFGHIKLMNOPRSTUVYZ';
   const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
 
-  // PEDİATRİ ODAK ALANLARI
+  // --- BURAYI GÜNCELLEDİK: KONU YELPAZESİNİ GENİŞLETTİK ---
   const focusAreas = [
-    'Nadir görülen bir genetik sendrom',
-    'Aşı takviminde yer alan veya yer almayan bir enfeksiyon',
-    'Büyüme ve gelişme geriliği ile gelen bir vaka',
-    'Pediatrik acilde sık görülen zehirlenme veya travma',
-    'Yenidoğan dönemine özgü bir patoloji',
-    'TUS Pediatri sınavında sorgulanan önemli bir detay',
-    'Nelson kitabında vurgulanan klinik bir ipucu (Clinical Pearl)',
+    'Nadir görülen bir sendrom veya genetik bozukluk',
+    'Aşı takviminde kritik bir detay veya özel aşılar',
+    'Nöromotor gelişim basamakları (Örn: 6. ayda neler yapar?)',
+    'Pediatrik acilde kullanılan bir resüsitasyon algoritması',
+    'Yenidoğan dönemine özgü fizyolojik bir değişim',
+    'Sıvı-elektrolit tedavisinde kullanılan bir formül veya hesaplama',
+    'Bir zehirlenme vakasında spesifik antidot kullanımı',
+    'APGAR, Glasgow veya Silvermann gibi bir skorlama sistemi',
+    'TUS sınavında sık sorulan bir spot bilgi',
+    "Nelson kitabında 'Clinical Pearls' olarak geçen bir ipucu",
   ];
   const randomFocus = focusAreas[Math.floor(Math.random() * focusAreas.length)];
 
   let taskDescription = '';
   if (specificTopic && specificTopic.trim() !== '') {
-    taskDescription = `GÖREV: "${specificTopic}" konusu hakkında Nelson Textbook of Pediatrics referanslı, kapsamlı bir hastalık/vaka kartı hazırla.
+    taskDescription = `GÖREV: "${specificTopic}" konusu hakkında Nelson Textbook of Pediatrics referanslı, kapsamlı bir bilgi kartı hazırla.
       Kategori: [${validCategories}].`;
   } else {
-    taskDescription = `GÖREV: "${selectedCategory}" alanından rastgele bir hastalık seç.
-      ÖNEMLİ KURAL: Asla 'KOAH', 'Alzheimer', 'Koroner Arter Hastalığı', 'Erişkin Tip Diyabet' gibi sadece yetişkinlerde görülen konuları SEÇME.
-      Bunun yerine, "${randomLetter}" harfi ile başlayan veya "${randomFocus}" özelliğine sahip pediatrik bir konu seçmeni istiyorum.
-      Her seferinde mutlaka farklı bir konu seç.`;
+    taskDescription = `GÖREV: "${selectedCategory}" alanından rastgele bir TIBBİ KONU seç.
+      ÖNEMLİ KURAL: Sadece hastalıkları seçmek zorunda değilsin.
+      Bunun yerine: "${randomFocus}" özelliğine sahip, "${randomLetter}" harfiyle de başlayabilecek spesifik bir konu seç.
+      Örnek Konular: 'Yenidoğan Refleksleri', 'Anne Sütü İçeriği', 'Kızamık Aşısı Yan Etkileri', 'Hiponatremi Düzeltme Formülü', 'Kawasaki Tanı Kriterleri' gibi çeşitli konular olabilir.`;
   }
 
-  // PEDİATRİ ASİSTANI ROLÜ
+  // --- PROMPT GÜNCELLEMESİ: FORMATI ESNETTİK ---
+  // AI'ya hastalık dışı konuları mevcut kutucuklara (patogenez, klinik vb.) nasıl uyduracağını öğretiyoruz.
   const prompt = `Sen uzman bir Çocuk Sağlığı ve Hastalıkları (Pediatri) asistanısın.
-  Nelson Textbook of Pediatrics referanslı içerik üret. ${taskDescription}
-  Bana şu formatta SADECE geçerli bir JSON döndür:
-  {
-    "title": "Hastalık Adı", "category": "Kategori", "reference": "Nelson 21. Baskı, Bölüm X",
-    "content": { "definition": "...", "pathogenesis": "...", "clinical": "...", "labs": "...", "diagnosis": "...", "treatment_tus": "..." }
-  }`;
+      Nelson Textbook of Pediatrics referanslı içerik üret. ${taskDescription}
+      
+      Çok önemli: Eğer seçtiğin konu bir "Hastalık" değilse (Örn: Gelişim Basamağı, Aşı, Skorlama Sistemi), JSON alanlarını şu mantıkla doldur:
+      - definition: Konunun tanımı veya ne olduğu.
+      - pathogenesis: Fizyolojik mekanizma, Önemi veya Neden yapıldığı.
+      - clinical: Klinik bulgular, Uygulama şekli veya Skorlama kriterleri.
+      - labs: Gerekli tetkikler, Referans aralıklar veya İzlem parametreleri.
+      - diagnosis: Tanı koydurucu özellikler veya Değerlendirme yöntemi.
+      - treatment_tus: Yönetim, Tedavi yaklaşımı veya TUS için bilinmesi gereken "En Önemli" spot bilgi.
+
+      Bana şu formatta SADECE geçerli bir JSON döndür:
+      {
+        "title": "Başlık (Hastalık veya Konu Adı)", 
+        "category": "Kategori", 
+        "reference": "Nelson Textbook of Pediatrics, 21. Baskı, Bölüm X",
+        "content": { 
+            "definition": "...", 
+            "pathogenesis": "...", 
+            "clinical": "...", 
+            "labs": "...", 
+            "diagnosis": "...", 
+            "treatment_tus": "..." 
+        }
+      }`;
 
   try {
     const response = await fetch(
@@ -236,13 +317,29 @@ const generateMedicalContent = async (category, specificTopic = null) => {
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 1.2,
+            temperature: 1.2, // Yüksek yaratıcılık
             topK: 40,
             topP: 0.95,
           },
         }),
       }
     );
+    if (!response.ok) throw new Error('API Error');
+    const data = await response.json();
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) {
+      text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const firstBrace = text.indexOf('{');
+      const lastBrace = text.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1)
+        text = text.substring(firstBrace, lastBrace + 1);
+      return JSON.parse(text);
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
     if (!response.ok) throw new Error('API Error');
     const data = await response.json();
     let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
