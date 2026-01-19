@@ -124,7 +124,7 @@ const auth = getAuth(app);
 //   typeof __app_id !== 'undefined' ? __app_id : 'nelson-daily-pediatri-v1';
 const HARRISON_ID = 'harrison-daily-stable-v55'; // Kullanıcılar buradan gelecek
 const NELSON_ID = 'nelson-daily-v1'; // Pediatri içerikleri buraya gidecek
-const apiKey = 'AIzaSyB2Appb5YbP-jGFvV6ZTgtdGS4E7qTM_rI';
+const apiKey = 'AIzaSyAFJ7x7hgQdefcqEVx7Wk_rsa38tmn1haA';
 
 // PEDİATRİ KATEGORİLERİ
 const CATEGORIES = [
